@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static MyFisher.EnumContainer;
 
 namespace MyFisher
 {
@@ -27,19 +29,46 @@ namespace MyFisher
             }
         }
         #endregion
-        public UICustomElement MainMenu;
-        public UICustomElement Gameplay;
-
-        // Start is called before the first frame update
-        void Start()
+        [SerializeField]
+        public List<UICustomTemplate> UiList;
+        
+        public void Start()
         {
-
+            InitUI();
         }
 
-        // Update is called once per frame
-        void Update()
+        private void InitUI()
         {
+            FindAllUiElement();
+            GoToUiElement(MENUSTATE.MAINMENU);
+        }
 
+        private void FindAllUiElement()
+        {
+            UiList = new List<UICustomTemplate>();
+            var objList = FindObjectsOfType<UICustomTemplate>();
+            foreach (var item in objList)
+            {
+                UiList.Add(item);
+            }
+        }
+
+        public void GoToUiElement(MENUSTATE menuState)
+        {
+            if (!UiList.Exists(x => x.menuState == menuState))
+            {
+                return;
+            }
+            CloseAllUI();
+            UiList.Find(x => x.menuState == menuState).Show();
+        } 
+
+        public void CloseAllUI()
+        {
+            foreach(var ui in UiList)
+            {
+                ui.Hide();
+            }
         }
     }
 }

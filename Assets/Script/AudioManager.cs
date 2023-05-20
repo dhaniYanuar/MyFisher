@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static MyFisher.EnumContainer;
 
 namespace MyFisher
 {
@@ -67,7 +68,7 @@ namespace MyFisher
         }
 
 
-        public enum SFXENUM {HIT, LOSE, SWIPE}
+
         [Serializable]
         public struct SFXElement
         {

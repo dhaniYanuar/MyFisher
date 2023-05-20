@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace MyFisher
 {
-    public class UIMainMenu : MonoBehaviour, UICustomElement
+    public class UIMainMenu : UICustomTemplate
     {
         public Button play;
         public Button credit;
@@ -42,7 +42,7 @@ namespace MyFisher
 
         private void OnClickPlay()
         {
-
+            UIRoot.Instance.GoToUiElement(EnumContainer.MENUSTATE.GAMEPLAY);
         }
 
         public void OnClickCredit()
@@ -57,16 +57,6 @@ namespace MyFisher
 #else
             Application.Quit();
 #endif
-        }
-
-        public void Hide()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Show()
-        {
-            throw new System.NotImplementedException();
         }
     }
 
