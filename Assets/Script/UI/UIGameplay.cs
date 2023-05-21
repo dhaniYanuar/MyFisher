@@ -8,6 +8,10 @@ namespace MyFisher
     public class UIGameplay : UICustomTemplate
     {
         public Slider IndPowerSlider;
+        private void Start()
+        {
+            menuState = EnumContainer.MENUSTATE.GAMEPLAY;
+        }
         public override void Show()
         {
             base.Show();

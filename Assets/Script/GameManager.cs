@@ -33,6 +33,8 @@ namespace MyFisher
         public Animator characterAnim;
         public GAMESTATE gameState;
         private int waitingTime;
+        private int failed;
+        private int fish;
 
         // Start is called before the first frame update
         void Start()
@@ -42,7 +44,19 @@ namespace MyFisher
 
         public void Init()
         {
-            gameState = GAMESTATE.IDLE;
+            StartCoroutine(GettingReadyGameplay());
+        }
+
+        private void ResetScore()
+        {
+            failed = 0;
+            fish = 0;
+        }
+
+        IEnumerator GettingReadyGameplay()
+        {
+            yield return new WaitForSeconds(0.5f);
+            GameManager.Instance.gameState = EnumContainer.GAMESTATE.IDLE;
         }
 
         // Update is called once per frame
@@ -51,7 +65,8 @@ namespace MyFisher
             if (gameState != GAMESTATE.PAUSE)
             {
                 CastingInput();
-            }   
+                GetTheFish();
+            }
         }
 
         private void CastingInput()
@@ -65,17 +80,37 @@ namespace MyFisher
                 }
                 if (Input.GetMouseButtonUp(0))
                 {
-                    characterAnim.SetTrigger("Casting");
+                    StartCoroutine(WaitingForFish());
+                }
+            }
+        }
+
+        private void GetTheFish()
+        {
+            if (Input.GetMouseButton(0))
+            {
+                if (gameState == GAMESTATE.WAITNGFORFISH)
+                {
+                    failed++;
+                    gameState = GAMESTATE.IDLE;
+                }
+                if (gameState == GAMESTATE.CATCH)
+                {
+                    fish++;
+                    gameState = GAMESTATE.IDLE;
                 }
             }
         }
 
         IEnumerator WaitingForFish()
         {
+            gameState = GAMESTATE.CASTING;
+            characterAnim.SetTrigger("Casting");
+            yield return new WaitWhile(() => characterAnim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f);
             gameState = GAMESTATE.WAITNGFORFISH;
             waitingTime = Random.Range(1, 4);
             yield return new WaitForSeconds(waitingTime);
-            
+            gameState = GAMESTATE.CATCH;
         }
     }
 }

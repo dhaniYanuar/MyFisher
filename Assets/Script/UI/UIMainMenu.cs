@@ -13,6 +13,7 @@ namespace MyFisher
 
         private void Start()
         {
+            menuState = EnumContainer.MENUSTATE.MAINMENU;
             AssignListner();
         }
 
@@ -43,6 +44,7 @@ namespace MyFisher
         private void OnClickPlay()
         {
             UIRoot.Instance.GoToUiElement(EnumContainer.MENUSTATE.GAMEPLAY);
+            GameManager.Instance.Init();
         }
 
         public void OnClickCredit()

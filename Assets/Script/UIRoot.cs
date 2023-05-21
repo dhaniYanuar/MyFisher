@@ -61,7 +61,7 @@ namespace MyFisher
             }
             CloseAllUI();
             UiList.Find(x => x.menuState == menuState).Show();
-        } 
+        }
 
         public void CloseAllUI()
         {
