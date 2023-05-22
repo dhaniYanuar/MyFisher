@@ -32,7 +32,7 @@ namespace MyFisher
         public UIGameplay uIGameplay;
         public Animator characterAnim;
         public GAMESTATE gameState;
-        private int waitingTime;
+        private int waitingTime = 3;
         private int failed;
         private int fish;
 
@@ -87,30 +87,51 @@ namespace MyFisher
 
         private void GetTheFish()
         {
-            if (Input.GetMouseButton(0))
+            if (gameState == GAMESTATE.WAITNGFORFISH)
             {
-                if (gameState == GAMESTATE.WAITNGFORFISH)
+                if (Input.GetMouseButton(0))
                 {
-                    failed++;
-                    gameState = GAMESTATE.IDLE;
+                    StartCoroutine(DefeatSequence());
                 }
-                if (gameState == GAMESTATE.CATCH)
+            }
+            if (gameState == GAMESTATE.CATCH)
+            {
+                if (Input.GetMouseButton(0))
                 {
-                    fish++;
-                    gameState = GAMESTATE.IDLE;
+                    StartCoroutine(CelebrationSequence());
                 }
             }
         }
 
         IEnumerator WaitingForFish()
         {
-            gameState = GAMESTATE.CASTING;
+            gameState = GAMESTATE.PAUSE;
             characterAnim.SetTrigger("Casting");
-            yield return new WaitWhile(() => characterAnim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f);
+            yield return new WaitForSeconds(8f);
             gameState = GAMESTATE.WAITNGFORFISH;
-            waitingTime = Random.Range(1, 4);
             yield return new WaitForSeconds(waitingTime);
             gameState = GAMESTATE.CATCH;
+            yield return null;
+        }
+
+        IEnumerator DefeatSequence()
+        {
+            gameState = GAMESTATE.PAUSE;
+            failed++;
+            characterAnim.SetTrigger("Defeat");
+            yield return new WaitForSeconds(4.3f);
+            gameState = GAMESTATE.IDLE;
+            yield return null;
+        }
+
+        IEnumerator CelebrationSequence()
+        {
+            gameState = GAMESTATE.PAUSE;
+            fish++;
+            characterAnim.SetTrigger("Celebration");
+            yield return new WaitForSeconds(4.3f);
+            gameState = GAMESTATE.IDLE;
+            yield return null;
         }
     }
 }
