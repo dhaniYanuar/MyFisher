@@ -21,7 +21,7 @@ How To Play :
 
 
 Score :
-- Get the fish + 1
+- Get the fish + 1 || with mid power + 2 || with full power + 3 
 - Break the line failed + 1
 
 Game End :
