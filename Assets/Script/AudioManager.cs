@@ -67,7 +67,27 @@ namespace MyFisher
             SFXAudioSource.PlayOneShot(SFXes.Find(x=> x.Id_Name == Id_sfx).clip);
         }
 
+        public void PlayLoopSfx(SFXENUM Id_sfx)
+        {
+            if (SFXAudioSource.isPlaying)
+            {
+                return;
+            }
+            if (!SFXes.Exists(x => x.Id_Name == Id_sfx))
+            {
+                return;
+            }
+            SFXAudioSource.clip = SFXes.Find(x => x.Id_Name == Id_sfx).clip;
+            SFXAudioSource.Play();
+        }
 
+        public void StopSFX()
+        {
+            if (SFXAudioSource.isPlaying)
+            {
+                SFXAudioSource.Stop();
+            }
+        }
 
         [Serializable]
         public struct SFXElement

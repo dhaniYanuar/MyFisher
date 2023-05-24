@@ -6,8 +6,8 @@ namespace MyFisher
 {
     public class EnumContainer
     {
-        public enum SFXENUM { HIT, LOSE, SWIPE }
-        public enum GAMESTATE { IDLE, WAITNGFORFISH, BREAK, CATCH, PAUSE }
+        public enum SFXENUM { CASTINGROD, CASTBAIT, HIT, LOSE, PULLSTRING, LOSESTRING }
+        public enum GAMESTATE { IDLE, WAITNGFORFISH, HOOK, BREAK, CATCH, PAUSE, GAMEOVER }
         public enum MENUSTATE { MAINMENU, GAMEPLAY }
     }
 }

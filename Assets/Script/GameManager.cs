@@ -30,21 +30,24 @@ namespace MyFisher
         }
         #endregion
         public UIGameplay uIGameplay;
+        public Character character;
         public Animator characterAnim;
+        public HookBehavior hookBehavior;
         public GAMESTATE gameState;
         private int waitingTime = 3;
+        [SerializeField]
+        private float timer;
         private int failed;
         private int fish;
-
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
+        IEnumerator currentCoroutine;
 
         public void Init()
         {
-            StartCoroutine(GettingReadyGameplay());
+            timer = 121f;
+            currentCoroutine = GettingReadyGameplay();
+            hookBehavior.gameObject.SetActive(false);
+            StartCoroutine(currentCoroutine);
+            ResetScore();
         }
 
         private void ResetScore()
@@ -56,16 +59,24 @@ namespace MyFisher
         IEnumerator GettingReadyGameplay()
         {
             yield return new WaitForSeconds(0.5f);
-            GameManager.Instance.gameState = EnumContainer.GAMESTATE.IDLE;
+            gameState = GAMESTATE.IDLE;
+            yield return null;
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (gameState != GAMESTATE.PAUSE)
+            if (gameState != GAMESTATE.PAUSE && timer > 0)
             {
                 CastingInput();
                 GetTheFish();
+                timer -= Time.deltaTime;
+                uIGameplay.ChangeTimeText(timer);
+            }
+            if (gameState != GAMESTATE.PAUSE && timer <=0)
+            {
+                gameState = GAMESTATE.GAMEOVER;
+                uIGameplay.ShowResult(fish, failed);
             }
         }
 
@@ -75,12 +86,13 @@ namespace MyFisher
             {
                 if (Input.GetMouseButton(0))
                 {
-                    uIGameplay.IndPowerSlider.value += 0.4f * Time.deltaTime;
+                    uIGameplay.AddPowerValue(0.4f * Time.deltaTime);
 
                 }
                 if (Input.GetMouseButtonUp(0))
                 {
-                    StartCoroutine(WaitingForFish());
+                    currentCoroutine = WaitingForFish();
+                    StartCoroutine(currentCoroutine);
                 }
             }
         }
@@ -91,15 +103,30 @@ namespace MyFisher
             {
                 if (Input.GetMouseButton(0))
                 {
-                    StartCoroutine(DefeatSequence());
+                    StopCoroutine(currentCoroutine);
+                    currentCoroutine = DefeatSequence();
+                    StartCoroutine(currentCoroutine);
                 }
             }
             if (gameState == GAMESTATE.CATCH)
             {
                 if (Input.GetMouseButton(0))
                 {
-                    StartCoroutine(CelebrationSequence());
+                    character.RequestResetBait();
+                    character.HideCatchIndicator();
+                    hookBehavior.gameObject.SetActive(true);
+                    hookBehavior.Init();
+                    gameState = GAMESTATE.HOOK;
                 }
+            }
+            if (gameState == GAMESTATE.HOOK && !hookBehavior.IsHookEnd())
+            {
+                hookBehavior.MoveIndicator();
+            }
+            else if (gameState == GAMESTATE.HOOK && hookBehavior.IsHookEnd())
+            {
+                currentCoroutine = CelebrationSequence();
+                StartCoroutine(currentCoroutine);
             }
         }
 
@@ -110,6 +137,7 @@ namespace MyFisher
             yield return new WaitForSeconds(8f);
             gameState = GAMESTATE.WAITNGFORFISH;
             yield return new WaitForSeconds(waitingTime);
+            character.RequestBaitCatch();
             gameState = GAMESTATE.CATCH;
             yield return null;
         }
@@ -117,20 +145,38 @@ namespace MyFisher
         IEnumerator DefeatSequence()
         {
             gameState = GAMESTATE.PAUSE;
+            AudioManager.Instance.PlaySFX(SFXENUM.LOSE);
+            character.RequestResetBait();
             failed++;
+            uIGameplay.ChangeFailedText(failed);
             characterAnim.SetTrigger("Defeat");
             yield return new WaitForSeconds(4.3f);
             gameState = GAMESTATE.IDLE;
+            uIGameplay.ResetIndicator();
             yield return null;
         }
 
         IEnumerator CelebrationSequence()
         {
             gameState = GAMESTATE.PAUSE;
-            fish++;
-            characterAnim.SetTrigger("Celebration");
+            if (hookBehavior.isCatched())
+            {
+                fish++;
+                uIGameplay.ChangeFishText(fish);
+                AudioManager.Instance.PlaySFX(SFXENUM.HIT);
+                characterAnim.SetTrigger("Celebration");
+            }
+            else
+            {
+                failed++;
+                AudioManager.Instance.PlaySFX(SFXENUM.LOSE);
+                uIGameplay.ChangeFailedText(failed);
+                characterAnim.SetTrigger("Defeat");
+            }
             yield return new WaitForSeconds(4.3f);
             gameState = GAMESTATE.IDLE;
+            uIGameplay.ResetIndicator();
+            hookBehavior.gameObject.SetActive(false);
             yield return null;
         }
     }

@@ -11,12 +11,6 @@ namespace MyFisher
         public Button credit;
         public Button exit;
 
-        private void Start()
-        {
-            menuState = EnumContainer.MENUSTATE.MAINMENU;
-            AssignListner();
-        }
-
         private void OnEnable()
         {
             AssignListner();
@@ -59,6 +53,14 @@ namespace MyFisher
 #else
             Application.Quit();
 #endif
+        }
+
+        public override void Show()
+        {
+            base.Show();
+            menuState = EnumContainer.MENUSTATE.MAINMENU;
+            GameManager.Instance.gameState = EnumContainer.GAMESTATE.PAUSE;
+            AssignListner();
         }
     }
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,15 +8,95 @@ namespace MyFisher
 {
     public class UIGameplay : UICustomTemplate
     {
-        public Slider IndPowerSlider;
+        [SerializeField]
+        private Slider IndPowerSlider;
+        [SerializeField]
+        private TextMeshProUGUI txtFish;
+        [SerializeField]
+        private TextMeshProUGUI txtFailed;
+        [SerializeField]
+        private TextMeshProUGUI txtTime;
+        [SerializeField]
+        private GameObject popUpResult;
+        [SerializeField]
+        private TextMeshProUGUI txtResultFish;
+        [SerializeField]
+        private TextMeshProUGUI txtResultFailed;
+        [SerializeField]
+        private Button btnRestart;
+        [SerializeField]
+        private Button btnBackToMainMenu;
+
         private void Start()
         {
             menuState = EnumContainer.MENUSTATE.GAMEPLAY;
         }
+
+        private void OnEnable()
+        {
+            btnRestart.onClick.AddListener(OnClickRestart);
+            btnBackToMainMenu.onClick.AddListener(OnClickMainMenu);
+        }
+
+        private void OnClickRestart()
+        {
+            UIRoot.Instance.GoToUiElement(EnumContainer.MENUSTATE.GAMEPLAY);
+            GameManager.Instance.Init();
+        }
+
+        private void OnClickMainMenu()
+        {
+            UIRoot.Instance.GoToUiElement(EnumContainer.MENUSTATE.MAINMENU);
+        }
+
+        public void ChangeFishText(int _fish)
+        {
+            txtFish.text = $"Fish : {_fish}";
+        }
+
+        public void ChangeFailedText(int _failed)
+        {
+            txtFailed.text = $"Failed : {_failed}";
+        }
+
+        public void ChangeTimeText(float _time)
+        {
+            if (_time <=0 )
+            {
+                txtTime.text = $"Time : TIMEOUT";
+                return;
+            }
+            float minutes = Mathf.FloorToInt(_time / 60);
+            float seconds = Mathf.FloorToInt(_time % 60);
+            var timeFormat = string.Format("{0:00}:{1:00}", minutes, seconds);
+            txtTime.text = $"Time : {timeFormat}";
+        }
+
+        public void ResetIndicator()
+        {
+            IndPowerSlider.value = 0;
+        }
+
+        public void AddPowerValue(float _power)
+        {
+            IndPowerSlider.value += _power;
+        }
+
+        public void ShowResult(int _fish, int _failed)
+        {
+            popUpResult.SetActive(true);
+            txtResultFish.text = $": {_fish}";
+            txtResultFailed.text = $": {_failed}";
+        }
+
         public override void Show()
         {
             base.Show();
             IndPowerSlider.value = 0;
+            txtFish.text = $"Fish : 0";
+            txtFailed.text = $"Failed : 0";
+            txtTime.text = $"Time : 00:00";
+            popUpResult.SetActive(false);
         }
     }
 }
