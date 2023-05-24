@@ -21,12 +21,12 @@ How To Play :
 
 
 Score :
-- Get the fish + 1
+- Get the fish + 1 || with mid power + 2 || with full power + 3 
 - Break the line failed + 1
 
 Game End :
 Timer timout
 
-Developer NOTE : you use this project for your personal use, its just a simple template i made for fishing mechanic. if you attach me in the credit i will so gratefull.
+Developer NOTE : you can use this project for your personal use, its just a simple template i made for fishing mechanic. if you attach me in the credit i will so gratefull.
 
 THANKS
