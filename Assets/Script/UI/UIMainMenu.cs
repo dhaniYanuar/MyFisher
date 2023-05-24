@@ -48,7 +48,7 @@ namespace MyFisher
 
         public void OnClickExit()
         {
-#if UNITY_STANDALONE_WIN
+#if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
             Application.Quit();
