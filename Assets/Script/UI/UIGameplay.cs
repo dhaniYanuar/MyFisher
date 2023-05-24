@@ -23,7 +23,13 @@ namespace MyFisher
         [SerializeField]
         private TextMeshProUGUI txtResultFailed;
         [SerializeField]
-        private Button btnRestart;
+        private Button btnResultRestart;
+        [SerializeField]
+        private Button btnResultBackToMainMenu;
+        [SerializeField]
+        private GameObject popUpPause;
+        [SerializeField]
+        private Button btnResume;
         [SerializeField]
         private Button btnBackToMainMenu;
 
@@ -34,8 +40,16 @@ namespace MyFisher
 
         private void OnEnable()
         {
-            btnRestart.onClick.AddListener(OnClickRestart);
+            btnResume.onClick.AddListener(OnClickResume);
             btnBackToMainMenu.onClick.AddListener(OnClickMainMenu);
+            btnResultRestart.onClick.AddListener(OnClickRestart);
+            btnResultBackToMainMenu.onClick.AddListener(OnClickMainMenu);
+        }
+
+        private void OnClickResume()
+        {
+            popUpPause.SetActive(false);
+            GameManager.Instance.Resume();
         }
 
         private void OnClickRestart()
@@ -89,6 +103,11 @@ namespace MyFisher
             txtResultFailed.text = $": {_failed}";
         }
 
+        public void ShowPause()
+        {
+            popUpPause.SetActive(true);
+        }
+
         public override void Show()
         {
             base.Show();
@@ -97,6 +116,7 @@ namespace MyFisher
             txtFailed.text = $"Failed : 0";
             txtTime.text = $"Time : 00:00";
             popUpResult.SetActive(false);
+            popUpPause.SetActive(false);
         }
     }
 }

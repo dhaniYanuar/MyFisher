@@ -56,6 +56,13 @@ namespace MyFisher
             fish = 0;
         }
 
+        public void Resume()
+        {
+            currentCoroutine = GettingReadyGameplay();
+            uIGameplay.ResetIndicator();
+            StartCoroutine(currentCoroutine);
+        }
+
         IEnumerator GettingReadyGameplay()
         {
             yield return new WaitForSeconds(0.5f);
@@ -68,6 +75,7 @@ namespace MyFisher
         {
             if (gameState != GAMESTATE.PAUSE && timer > 0)
             {
+                PauseInput();
                 CastingInput();
                 GetTheFish();
                 timer -= Time.deltaTime;
@@ -77,6 +85,18 @@ namespace MyFisher
             {
                 gameState = GAMESTATE.GAMEOVER;
                 uIGameplay.ShowResult(fish, failed);
+            }
+        }
+
+        private void PauseInput()
+        {
+            if (gameState == GAMESTATE.IDLE)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    uIGameplay.ShowPause();
+                    gameState = GAMESTATE.PAUSE;
+                }
             }
         }
 
