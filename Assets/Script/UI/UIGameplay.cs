@@ -96,6 +96,11 @@ namespace MyFisher
             IndPowerSlider.value += _power;
         }
 
+        public float GetPowerValue()
+        {
+            return IndPowerSlider.value;
+        }
+
         public void ShowResult(int _fish, int _failed)
         {
             popUpResult.SetActive(true);

@@ -30,6 +30,7 @@ namespace MyFisher
         {
             timeHook = 10f;
             powerLine = 10;
+            smoothMotion = GameManager.Instance.GetDifficultFish();
         }
 
         public void MoveIndicator()

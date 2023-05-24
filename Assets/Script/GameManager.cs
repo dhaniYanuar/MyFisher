@@ -39,6 +39,7 @@ namespace MyFisher
         private float timer;
         private int failed;
         private int fish;
+        private int pointPlus;
         IEnumerator currentCoroutine;
 
         public void Init()
@@ -111,10 +112,35 @@ namespace MyFisher
                 }
                 if (Input.GetMouseButtonUp(0))
                 {
+                    if (uIGameplay.GetPowerValue() < 0.5f)
+                    {
+                        pointPlus = 0;
+                    }
+                    if (uIGameplay.GetPowerValue() > 0.5f)
+                    {
+                        pointPlus = 1;
+                    }
+                    if (uIGameplay.GetPowerValue() >= 0.8f)
+                    {
+                        pointPlus = 2;
+                    }
                     currentCoroutine = WaitingForFish();
                     StartCoroutine(currentCoroutine);
                 }
             }
+        }
+
+        public float GetDifficultFish()
+        {
+            if (pointPlus == 1)
+            {
+                return 0.2f;
+            }
+            if (pointPlus == 2)
+            {
+                return 0.05f;
+            }
+            return 1f; 
         }
 
         private void GetTheFish()
@@ -181,7 +207,7 @@ namespace MyFisher
             gameState = GAMESTATE.PAUSE;
             if (hookBehavior.isCatched())
             {
-                fish++;
+                fish += 1 + pointPlus;
                 uIGameplay.ChangeFishText(fish);
                 AudioManager.Instance.PlaySFX(SFXENUM.HIT);
                 characterAnim.SetTrigger("Celebration");
